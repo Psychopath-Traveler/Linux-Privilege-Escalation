@@ -34,6 +34,9 @@ The exploit sets full capabilities (`cap_sys_admin+ep`, etc.) on a binary inside
 - Vulnerable Ubuntu version (unpatched)
 - gcc (for compilation)
 
+### PoC ###
+<img width="902" height="254" alt="Poc" src="https://github.com/user-attachments/assets/b0d9dc14-a73d-476c-b9c0-0cb9fad25e19" />
+
 ### Build & Run
 
 ```bash
@@ -43,7 +46,6 @@ gcc -static kernel_exploit.c -o exploit
 # Make executable
 chmod +x exploit
 
+
 # Run the exploit
 ./exploit
-
-<image-card alt="PoC" src="Poc.png" ></image-card>
