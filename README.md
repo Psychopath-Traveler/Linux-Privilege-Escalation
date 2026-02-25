@@ -62,5 +62,5 @@ id
 uid=0(root) gid=0(root) groups=0(root)
 ```
 
-## PoC
+## PoC 
 <img width="919" height="249" alt="image" src="https://github.com/user-attachments/assets/f68776aa-c599-4184-ada2-e9bb3abbbb17" />
