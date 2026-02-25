@@ -46,4 +46,4 @@ chmod +x exploit
 # Run the exploit
 ./exploit
 
-<img width="902" height="254" alt="image" src="https://github.com/user-attachments/assets/9d332dc5-9e9c-4374-beb0-15f4421da8a2" />
+<img width="902" height="254" alt="Poc" src="https://github.com/user-attachments/assets/4ba78ebf-958b-4dff-989e-1d6bcec5d7a1" />
