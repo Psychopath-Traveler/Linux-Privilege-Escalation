@@ -45,3 +45,5 @@ chmod +x exploit
 
 # Run the exploit
 ./exploit
+
+<img width="902" height="254" alt="image" src="https://github.com/user-attachments/assets/9d332dc5-9e9c-4374-beb0-15f4421da8a2" />
