@@ -1,4 +1,3 @@
-```markdown
 # Shared Libraries
 
 It is common for Linux programs to use dynamically linked shared object libraries. Libraries contain compiled code or other data that developers use to avoid having to re-write the same pieces of code across multiple programs. Two types of libraries exist in Linux: **static libraries** (denoted by the .a file extension) and **dynamically linked shared object libraries** (denoted by the .so file extension). When a program is compiled, static libraries become part of the program and can not be altered. However, dynamic libraries can be modified to control the execution of the program that calls them.
@@ -7,7 +6,6 @@ There are multiple methods for specifying the location of dynamic libraries, so 
 
 Additionally, the LD_PRELOAD environment variable can load a library before executing a binary. The functions from this library are given preference over the default ones. The shared objects required by a binary can be viewed using the ldd utility.
 
-**Shared Libraries**
 ```bash
 htb_student@NIX02:~$ ldd /bin/ls
 linux-vdso.so.1 => (0x00007fff03bc7000)
@@ -17,7 +15,6 @@ libpcre.so.3 => /lib/x86_64-linux-gnu/libpcre.so.3 (0x00007f4185c4e000)
 libdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007f4185a4a000)
 /lib64/ld-linux-x86-64.so.2 (0x00007f41864aa000)
 libpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007f418582d000)
-```
 
 The image above lists all the libraries required by `/bin/ls`, along with their absolute paths.
 
