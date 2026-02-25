@@ -46,3 +46,4 @@ chmod +x exploit
 # Run the exploit
 ./exploit
 
+<image-card alt="PoC" src="Poc.png" ></image-card>
