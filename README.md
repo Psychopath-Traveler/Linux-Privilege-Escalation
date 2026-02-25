@@ -21,7 +21,7 @@ The image above lists all the libraries required by `/bin/ls`, along with their 
 
 ## LD_PRELOAD Privilege Escalation
 
-Let's see an example of how we can utilize the `LD_PRELOAD` environment variable to escalate privileges. For this, we need a user with `sudo` privileges.
+Let's see an example of how we can utilize the **LD_PRELOAD** environment variable to escalate privileges. For this, we need a user with `sudo` privileges.
 
 ```bash
 htb_student@NIX02:~$ sudo -l
