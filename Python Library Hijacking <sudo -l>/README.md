@@ -69,12 +69,6 @@ htb-student@lpenix:~$ ls -l /usr/local/lib/python3.8/dist-packages/psutil/__init
 
 -rw-r--rw- 1 root staff 87339 Dec 13 20:07 /usr/local/lib/python3.8/dist-packages/psutil/__init__.py
 ```
-**If we don't have write access to file but we could create a fake one called psutil.py and put the file at the current working folder.**
-```
-htb-student@ubuntu:~$ ls -l /usr/local/lib/python3.8/dist-packages/psutil/__init__.py
-
--rw-r--r-- 1 htb-student staff 87657 Jun  8  2023 /usr/local/lib/python3.8/dist-packages/psutil/__init__.py
-```
 Such permissions are most common in developer environments where many developers work on different scripts and may require higher privileges.
 ### Module Contents
 ```
@@ -179,32 +173,6 @@ drwxr-xr-x 30 root root  20480 Jun  5  2023 .
 drwxr-xr-x 85 root root   4096 Jun  5  2023 ..
 ...SNIP...
 ```
-### Python Module Shadowing – Local Import Hijacking (The Quick Win)
-```
-### Python Module Shadowing – Local Import Hijacking (The Quick Win)
-
-This is the intended privilege escalation path in this scenario.
-
-The key insight:  
-When you run a Python script with `sudo`, the **entire Python process runs as root**, including any code that gets imported.
-
-**Crucial behavior of Python's module search order (`sys.path`):**
-
-When Python executes a script (e.g. `sudo python3 /home/htb-student/mem_status.py`), it **automatically inserts the directory containing the script** as the **very first entry** in `sys.path`.
-
-Example of what Python builds internally:
-
-```python
-sys.path = [
-    '/home/htb-student',                        # ← your current directory comes FIRST
-    '/usr/lib/python38.zip',
-    '/usr/lib/python3.8',
-    '/usr/lib/python3.8/lib-dynload',
-    '/usr/local/lib/python3.8/dist-packages',   # ← real psutil is here
-    '/usr/lib/python3/dist-packages',
-    ...
-]
-```
 After checking all of the directories listed, it appears that `/usr/lib/python3.8` path is misconfigured in a way to allow any user to write to it. Cross-checking with values from the `PYTHONPATH` variable, we can see that this path is higher on the list than the path in which `psutil` is installed in. Let us try abusing this misconfiguration to create our own `psutil` module containing our own malicious `virtual_memory()` function within the `/usr/lib/python3.8` directory.
 ### Hijacked Module Contents - psutil.py
 ```
@@ -254,3 +222,86 @@ uid=0(root) gid=0(root) groups=0(root)
 ...SNIP...
 ```
 In this example, we moved the previous python script from the `/usr/lib/python3.8` directory to `/tmp`. From here we once again call `/usr/bin/python3` to run `mem_stats.py`, however, we specify that the `PYTHONPATH` variable contain the `/tmp` directory so that it forces Python to search that directory looking for the `psutil` module to import. As we can see, we once again have successfully run our script under the context of root.
+
+# Python Module Shadowing – Local Import Hijacking or Current Working Directory Hijacking
+```
+This is the intended privilege escalation path in this scenario.
+
+The key insight:  
+When you run a Python script with `sudo`, the **entire Python process runs as root**, including any code that gets imported.
+
+**Crucial behavior of Python's module search order (`sys.path`):**
+
+When Python executes a script (e.g. `sudo python3 /home/htb-student/mem_status.py`), it **automatically inserts the directory containing the script** as the **very first entry** in `sys.path`.
+
+Example of what Python builds internally:
+
+```python
+sys.path = [
+    '/home/htb-student',                        # ← your current directory comes FIRST
+    '/usr/lib/python38.zip',
+    '/usr/lib/python3.8',
+    '/usr/lib/python3.8/lib-dynload',
+    '/usr/local/lib/python3.8/dist-packages',   # ← real psutil is here
+    '/usr/lib/python3/dist-packages',
+    ...
+]
+```
+### PoC
+```
+htb-student@ubuntu:~$ ls -l
+total 12
+-rwSrwxr-x 1 root        root         192 May 19  2023 mem_status.py
+-rw-rw-r-- 1 htb-student htb-student  124 Feb 26 12:59 psutil.py
+drwxr-xr-x 2 root        root        4096 Feb 26 13:00 __pycache__
+htb-student@ubuntu:~$ cat mem_status.py 
+#!/usr/bin/env python3
+import psutil 
+
+available_memory = psutil.virtual_memory().available * 100 / psutil.virtual_memory().total
+
+print(f"Available memory: {round(available_memory, 2)}%")
+
+htb-student@ubuntu:~$ grep -r "def virtual_memory" /usr/local/lib/python3.8/dist-packages/psutil/*
+/usr/local/lib/python3.8/dist-packages/psutil/__init__.py:def virtual_memory():
+/usr/local/lib/python3.8/dist-packages/psutil/_psaix.py:def virtual_memory():
+/usr/local/lib/python3.8/dist-packages/psutil/_psbsd.py:def virtual_memory():
+/usr/local/lib/python3.8/dist-packages/psutil/_pslinux.py:def virtual_memory():
+/usr/local/lib/python3.8/dist-packages/psutil/_psosx.py:def virtual_memory():
+/usr/local/lib/python3.8/dist-packages/psutil/_pssunos.py:def virtual_memory():
+/usr/local/lib/python3.8/dist-packages/psutil/_pswindows.py:def virtual_memory():
+htb-student@ubuntu:~$ ls -l /usr/local/lib/python3.8/dist-packages/psutil/__init__.py
+-rw-r--r-- 1 htb-student staff 87657 Jun  8  2023 /usr/local/lib/python3.8/dist-packages/psutil/__init__.py
+
+htb-student@ubuntu:~$ python3 -c 'import sys; print("\n".join(sys.path))'
+/usr/lib/python38.zip
+/usr/lib/python3.8
+/usr/lib/python3.8/lib-dynload
+/usr/local/lib/python3.8/dist-packages
+/usr/lib/python3/dist-packages
+
+htb-student@ubuntu:~$ pip3 show psutil
+Name: psutil
+Version: 5.9.5
+Summary: Cross-platform lib for process and system monitoring in Python.
+Home-page: https://github.com/giampaolo/psutil
+Author: Giampaolo Rodola
+Author-email: g.rodola@gmail.com
+License: BSD-3-Clause
+Location: /usr/local/lib/python3.8/dist-packages
+Requires: 
+Required-by:
+
+htb-student@ubuntu:~$ ls -la /usr/lib/python3.8
+total 4916
+drwxr-xr-x 30 root root  20480 Jun  5  2023 .
+drwxr-xr-x 85 root root   4096 Jun  5  2023 ..
+...SNIP...
+
+htb-student@ubuntu:~$ ls -la /usr/lib/python3.8/lib-dynload
+total 2836
+drwxr-xr-x  2 root root  12288 May 19  2023 .
+drwxr-xr-x 30 root root  20480 Jun  5  2023 ..
+...SNIP...
+```
+From result displayed above we don't have write access to `/usr/local/lib/python3.8/dist-packages/psutil/__init__.py` which is **Wrong Write Permission** method and we don't have write access to to the folders that has higher importing order then `/usr/local/lib/python3.8/dist-packages`, so we could place our `psutil.py` on the folder where `mem_status.py` exists.
