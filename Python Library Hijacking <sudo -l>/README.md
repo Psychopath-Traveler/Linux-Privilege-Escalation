@@ -297,11 +297,5 @@ total 4916
 drwxr-xr-x 30 root root  20480 Jun  5  2023 .
 drwxr-xr-x 85 root root   4096 Jun  5  2023 ..
 ...SNIP...
-
-htb-student@ubuntu:~$ ls -la /usr/lib/python3.8/lib-dynload
-total 2836
-drwxr-xr-x  2 root root  12288 May 19  2023 .
-drwxr-xr-x 30 root root  20480 Jun  5  2023 ..
-...SNIP...
 ```
 From result displayed above we don't have write access to `/usr/local/lib/python3.8/dist-packages/psutil/__init__.py` which is **Wrong Write Permission** method and we don't have write access to to the folders that has higher importing order then `/usr/local/lib/python3.8/dist-packages`, so we could place our `psutil.py` on the folder where `mem_status.py` exists.
