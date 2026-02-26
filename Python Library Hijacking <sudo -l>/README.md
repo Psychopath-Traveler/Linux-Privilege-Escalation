@@ -215,7 +215,7 @@ uid=0(root) gid=0(root) groups=0(root)
 In this example, we moved the previous python script from the `/usr/lib/python3.8` directory to `/tmp`. From here we once again call `/usr/bin/python3` to run `mem_stats.py`, however, we specify that the `PYTHONPATH` variable contain the `/tmp` directory so that it forces Python to search that directory looking for the `psutil` module to import. As we can see, we once again have successfully run our script under the context of root.
 
 # Python Module Shadowing – Local Import Hijacking or Current Working Directory Hijacking
-```
+
 This is the intended privilege escalation path in this scenario.
 
 The key insight:  
@@ -226,7 +226,7 @@ When you run a Python script with `sudo`, the **entire Python process runs as ro
 When Python executes a script (e.g. `sudo python3 /home/htb-student/mem_status.py`), it **automatically inserts the directory containing the script** as the **very first entry** in `sys.path`.
 
 Example of what Python builds internally:
-
+```
 ```python
 sys.path = [
     '/home/htb-student',                        # ← your current directory comes FIRST
