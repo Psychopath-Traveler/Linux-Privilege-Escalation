@@ -179,6 +179,32 @@ drwxr-xr-x 30 root root  20480 Jun  5  2023 .
 drwxr-xr-x 85 root root   4096 Jun  5  2023 ..
 ...SNIP...
 ```
+### Python Module Shadowing – Local Import Hijacking (The Quick Win)
+```
+### Python Module Shadowing – Local Import Hijacking (The Quick Win)
+
+This is the intended privilege escalation path in this scenario.
+
+The key insight:  
+When you run a Python script with `sudo`, the **entire Python process runs as root**, including any code that gets imported.
+
+**Crucial behavior of Python's module search order (`sys.path`):**
+
+When Python executes a script (e.g. `sudo python3 /home/htb-student/mem_status.py`), it **automatically inserts the directory containing the script** as the **very first entry** in `sys.path`.
+
+Example of what Python builds internally:
+
+```python
+sys.path = [
+    '/home/htb-student',                        # ← your current directory comes FIRST
+    '/usr/lib/python38.zip',
+    '/usr/lib/python3.8',
+    '/usr/lib/python3.8/lib-dynload',
+    '/usr/local/lib/python3.8/dist-packages',   # ← real psutil is here
+    '/usr/lib/python3/dist-packages',
+    ...
+]
+```
 After checking all of the directories listed, it appears that `/usr/lib/python3.8` path is misconfigured in a way to allow any user to write to it. Cross-checking with values from the `PYTHONPATH` variable, we can see that this path is higher on the list than the path in which `psutil` is installed in. Let us try abusing this misconfiguration to create our own `psutil` module containing our own malicious `virtual_memory()` function within the `/usr/lib/python3.8` directory.
 ### Hijacked Module Contents - psutil.py
 ```
