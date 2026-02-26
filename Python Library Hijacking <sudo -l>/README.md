@@ -168,8 +168,10 @@ total 4916
 drwxr-xrwx 30 root root  20480 Dec 14 16:26 .
 drwxr-xrwx 30 root root   4089 Dec 16 16:26 ..
 ...SNIP...
+```
 
-
+### If we don't have write access to file but we could create a fake one called psutil.py and put the file at the current working folder.
+```
 htb-student@ubuntu:~$ ls -la /usr/lib/python3.8
 total 4916
 drwxr-xr-x 30 root root  20480 Jun  5  2023 .
