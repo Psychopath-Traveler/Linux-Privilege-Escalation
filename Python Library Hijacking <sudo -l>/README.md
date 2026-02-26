@@ -141,6 +141,7 @@ htb-student@lpenix:~$ python3 -c 'import sys; print("\n".join(sys.path))'
 ### To be able to use this variant, two prerequisites are necessary.
 1. The module that is imported by the script is located under one of the lower priority paths listed via the `PYTHONPATH` variable.
 2. We must have write permissions to one of the paths having a higher priority on the list.
+
 Therefore, if the imported module is located in a path lower on the list and a higher priority path is editable by our user, we can create a module ourselves with the same name and include our own desired functions. Since the higher priority path is read earlier and examined for the module in question, Python accesses the first hit it finds and imports it before reaching the original and intended module.
 
 In order for this to make a bit more sense, let us continue with the previous example and show how this can be exploited. Previously, the `psutil` module was imported into the `mem_status.py` script. We can see `psutil`'s default installation location by issuing the following command:
