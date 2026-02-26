@@ -299,3 +299,5 @@ drwxr-xr-x 85 root root   4096 Jun  5  2023 ..
 ...SNIP...
 ```
 From result displayed above we don't have write access to `/usr/local/lib/python3.8/dist-packages/psutil/__init__.py` which is **Wrong Write Permission** method and we don't have write access to to the folders that has higher importing order then `/usr/local/lib/python3.8/dist-packages`, so we could place our `psutil.py` on the folder where `mem_status.py` exists.
+
+<image-card alt="Proof of Concept" src="poc.png" ></image-card>
