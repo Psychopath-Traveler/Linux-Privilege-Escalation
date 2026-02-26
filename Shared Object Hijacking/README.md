@@ -1,10 +1,24 @@
-## Shared Object Hijacking
+# Shared Object Hijacking
 
 Programs and binaries under development usually have custom libraries associated with them. Consider the following `SETUID` binary.
 ```
 htb-student@NIX02:~$ ls -la payroll
 
 -rwsr-xr-x 1 root root 16728 Sep  1 22:05 payroll
+```
+### Special Notes:
+We could through this command to find all the files that has SUID binary set.
+```
+htb-student@NIX02:~$ find / -perm -4000 -type f 2>/dev/null
+/home/htb-student/shared_obj_hijack/payroll
+/home/mrb3n/payroll
+/home/cliff.moore/netracer
+/bin/mount
+/bin/su
+/bin/sed
+/bin/umount
+/bin/fusermount
+/bin/ping
 ```
 
 We can use **ldd** to print the shared object required by a binary or shared object. `Ldd` displays the location of the object and the hexadecimal address where it is loaded into memory for each of a program's dependencies.
@@ -86,3 +100,5 @@ Malicious library loaded
 # id
 uid=0(root) gid=1000(mrb3n) groups=1000(mrb3n)
 ```
+## PoC
+<img width="818" height="551" alt="image" src="https://github.com/user-attachments/assets/49e259bb-fa3e-46ef-9642-20493adb1b38" />
