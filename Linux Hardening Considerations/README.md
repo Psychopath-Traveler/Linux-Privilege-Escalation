@@ -32,7 +32,7 @@ An audit and configuration review is not a replacement for a penetration test or
 
 One useful tool for auditing Unix-based systems (Linux, macOS, BDS, etc.) is **[Lynis](https://github.com/CISOfy/lynis)**. This tool audits the current configuration of a system and provides additional hardening tips, taking into consideration various standards. It can be used by internal teams such as system administrators as well as third-parties (auditors and penetration testers) to obtain a "baseline" of the system's current security configuration. Again, this tool or others like it should not replace the manual techniques discussed in this module but can be a strong supplement to cover areas that may be overlooked.
 
-After cloning the entire repo, we can run the tool by typing ./lynis audit system and receive a full report.
+After cloning the entire repo, we can run the tool by typing `./lynis audit system` and receive a full report.
 ```
 htb_student@NIX02:~$ ./lynis audit system
 
