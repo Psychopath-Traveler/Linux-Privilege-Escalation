@@ -27,7 +27,7 @@ Including screenshots of the above information can be helpful in a client report
 
 **We'll start out by checking out what operating system and version we are dealing with.**
 ```
-Leonardodk@htb[/htb]$ cat /etc/os-release
+victim@htb[/htb]$ cat /etc/os-release
 
 NAME="Ubuntu"
 VERSION="20.04.4 LTS (Focal Fossa)"
@@ -45,16 +45,16 @@ UBUNTU_CODENAME=focal
 
 We can see that the target is running **[Ubuntu 20.04.4 LTS ("Focal Fossa")](https://releases.ubuntu.com/20.04/)**. For whatever version we encounter its important to see if we're dealing with something out-of-date or maintained. Ubuntu publishes its **[release cycle](https://ubuntu.com/about/release-cycle)** and from this we can see that "Focal Fossa" does not reach end of life until April 2030. From this information we can assume that we will not encounter a well-known Kernel vulnerability because the customer has been keeping their internet-facing asset patched but we'll still look regardless.
 
-Next we'll want to check out our current user's PATH, which is where the Linux system looks every time a command is executed for any executables to match the name of what we type, i.e., `id` which on this system is located at `/usr/bin/id`. As we'll see later in this module, if the PATH variable for a target user is misconfigured we may be able to leverage it to escalate privileges. For now we'll note it down and add it to our notetaking tool of choice.
+**Next we'll want to check out our current user's PATH, which is where the Linux system looks every time a command is executed for any executables to match the name of what we type, i.e., `id` which on this system is located at `/usr/bin/id`. As we'll see later in this module, if the PATH variable for a target user is misconfigured we may be able to leverage it to escalate privileges. For now we'll note it down and add it to our notetaking tool of choice.**
 ```
-Leonardodk@htb[/htb]$ echo $PATH
+victim@htb[/htb]$ echo $PATH
 
 /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 ```
 
 **We can also check out all environment variables that are set for our current user, we may get lucky and find something sensitive in there such as a password. We'll note this down and move on.**
 ```
-Leonardodk@htb[/htb]$ env
+victim@htb[/htb]$ env
 
 SHELL=/bin/bash
 PWD=/home/htb-student
@@ -67,16 +67,16 @@ LANG=en_US.UTF-8
 <SNIP>
 ```
 
-Next let's note down the Kernel version. We can do some searches to see if the target is running a vulnerable Kernel (which we'll get to take advantage of later on in the module) which has some known public exploit PoC. We can do this a few ways, another way would be `cat /proc/version` but we'll use the `uname -a` command.
+**Next let's note down the Kernel version. We can do some searches to see if the target is running a vulnerable Kernel (which we'll get to take advantage of later on in the module) which has some known public exploit PoC. We can do this a few ways, another way would be `cat /proc/version` but we'll use the `uname -a` command.**
 ```
-Leonardodk@htb[/htb]$ uname -a
+victim@htb[/htb]$ uname -a
 
 Linux nixlpe02 5.4.0-122-generic #138-Ubuntu SMP Wed Jun 22 15:00:31 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux
 ```
 
 **We can next gather some additional information about the host itself such as the CPU type/version:**
 ```
-Leonardodk@htb[/htb]$ lscpu 
+victim@htb[/htb]$ lscpu 
 
 Architecture:                    x86_64
 CPU op-mode(s):                  32-bit, 64-bit
@@ -102,7 +102,7 @@ Hypervisor vendor:               VMware
 
 **What login shells exist on the server? Note these down and highlight that both Tmux and Screen are available to us.**
 ```
-Leonardodk@htb[/htb]$ cat /etc/shells
+victim@htb[/htb]$ cat /etc/shells
 
 # /etc/shells: valid login shells
 /bin/sh
@@ -127,9 +127,9 @@ Leonardodk@htb[/htb]$ cat /etc/shells
 
 Often we will not have the privileges to enumerate the configurations of these protections but knowing what, if any, are in place, can help us not to waste time on certain tasks.
 
-Next we can take a look at the drives and any shares on the system. First, we can use the `lsblk` command to enumerate information about block devices on the system (hard disks, USB drives, optical drives, etc.). If we discover and can mount an additional drive or unmounted file system, we may find sensitive files, passwords, or backups that can be leveraged to escalate privileges.
+**Next we can take a look at the drives and any shares on the system. First, we can use the `lsblk` command to enumerate information about block devices on the system (hard disks, USB drives, optical drives, etc.). If we discover and can mount an additional drive or unmounted file system, we may find sensitive files, passwords, or backups that can be leveraged to escalate privileges.**
 ```
-Leonardodk@htb[/htb]$ lsblk
+victim@htb[/htb]$ lsblk
 
 NAME                      MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
 loop0                       7:0    0   55M  1 loop /snap/core18/1705
@@ -150,7 +150,7 @@ The command `lpstat` can be used to find information about any printers attached
 
 **We should also check for mounted drives and unmounted drives. Can we mount an umounted drive and gain access to sensitive data? Can we find any types of credentials in `fstab` for mounted drives by grepping for common words such as password, username, credential, etc in `/etc/fstab`?**
 ```
-Leonardodk@htb[/htb]$ cat /etc/fstab
+victim@htb[/htb]$ cat /etc/fstab
 
 # /etc/fstab: static file system information.
 #
@@ -167,7 +167,7 @@ Leonardodk@htb[/htb]$ cat /etc/fstab
 
 **Check out the routing table by typing `route` or `netstat -rn`. Here we can see what other networks are available via which interface.**
 ```
-Leonardodk@htb[/htb]$ route
+victim@htb[/htb]$ route
 
 Kernel IP routing table
 Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
@@ -179,7 +179,7 @@ In a domain environment we'll definitely want to check `/etc/resolv.conf` if the
 
 **We'll also want to check the arp table to see what other hosts the target has been communicating with.**
 ```
-Leonardodk@htb[/htb]$ arp -a
+victim@htb[/htb]$ arp -a
 
 _gateway (10.129.0.1) at 00:50:56:b9:b9:fc [ether] on ens192
 ```
@@ -195,7 +195,7 @@ _gateway (10.129.0.1) at 00:50:56:b9:b9:fc [ether] on ens192
 
 ### Existing Users
 ```
-Leonardodk@htb[/htb]$ cat /etc/passwd
+victim@htb[/htb]$ cat /etc/passwd
 
 root:x:0:0:root:/root:/bin/bash
 daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
@@ -228,7 +228,7 @@ htb-student:x:1008:1008::/home/htb-student:/bin/bash
 
 **Occasionally, we will see password hashes directly in the `/etc/passwd` file. This file is readable by all users, and as with hashes in the `/etc/shadow` file, these can be subjected to an offline password cracking attack. This configuration, while not common, can sometimes be seen on embedded devices and routers.**
 ```
-Leonardodk@htb[/htb]$ cat /etc/passwd | cut -f1 -d:
+victim@htb[/htb]$ cat /etc/passwd | cut -f1 -d:
 
 root
 daemon
@@ -252,17 +252,17 @@ htb-student
 **With Linux, several different hash algorithms can be used to make the passwords unrecognizable. Identifying them from the first hash blocks can help us to use and work with them later if needed. Here is a list of the most used ones:**
 ```
 Algorithm	                        Hash
-Salted MD5	                      $1$...
-SHA-256	                          $5$...
-SHA-512	                          $6$...
-BCrypt	                          $2a$...
-Scrypt	                          $7$...
-Argon2	                          $argon2i$...
+Salted MD5	                        $1$...
+SHA-256	                            $5$...
+SHA-512	                            $6$...
+BCrypt	                            $2a$...
+Scrypt	                            $7$...
+Argon2	                            $argon2i$...
 ```
 
 **We'll also want to check which users have login shells. Once we see what shells are on the system, we can check each version for vulnerabilities. Because outdated versions, such as Bash version 4.1, are vulnerable to a `shellshock` exploit.**
 ```
-Leonardodk@htb[/htb]$ grep "sh$" /etc/passwd
+victim@htb[/htb]$ grep "sh$" /etc/passwd
 
 root:x:0:0:root:/root:/bin/bash
 mrb3n:x:1000:1000:mrb3n:/home/mrb3n:/bin/bash
@@ -279,7 +279,7 @@ htb-student:x:1008:1008::/home/htb-student:/bin/bash
 **Each user in Linux systems is assigned to a specific group or groups and thus receives special privileges. For example, if we have a folder named `dev` only for developers, a user must be assigned to the appropriate group to access that folder. The information about the available groups can be found in the `/etc/group` file, which shows us both the group name and the assigned user names.**
 ### Existing Groups
 ```
-Leonardodk@htb[/htb]$ cat /etc/group
+victim@htb[/htb]$ cat /etc/group
 
 root:x:0:
 daemon:x:1:
@@ -310,14 +310,14 @@ www-data:x:33:
 
 **The /etc/group file lists all of the groups on the system. We can then use the **[getent](https://man7.org/linux/man-pages/man1/getent.1.html)** command to list members of any interesting groups.**
 ```
-Leonardodk@htb[/htb]$ getent group sudo
+victim@htb[/htb]$ getent group sudo
 
 sudo:x:27:mrb3n
 ```
 
 **We can also check out which users have a folder under the `/home` directory. We'll want to enumerate each of these to see if any of the system users are storing any sensitive data, files containing passwords. We should check to see if files such as the `.bash_history` file are readable and contain any interesting commands and look for configuration files. It is not uncommon to find files containing credentials that can be leveraged to access other systems or even gain entry into the Active Directory environment. Its also important to check for SSH keys for all users, as these could be used to achieve persistence on the system, potentially to escalate privileges, or to assist with pivoting and port forwarding further into the internal network. At the minimum, check the ARP cache to see what other hosts are being accessed and cross-reference these against any useable SSH private keys.**
 ```
-Leonardodk@htb[/htb]$ ls /home
+victim@htb[/htb]$ ls /home
 
 administrator.ilfreight  bjones       htb-student  mrb3n   stacey.jenkins
 backupsvc                cliff.moore  logger       shared
@@ -330,7 +330,7 @@ If we've gathered any passwords we should try them at this time for all users pr
 In Linux, there are many different places where such files can be stored, including mounted file systems. A mounted file system is a file system that is attached to a particular directory on the system and accessed through that directory. Many file systems, such as ext4, NTFS, and FAT32, can be mounted. Each type of file system has its own benefits and drawbacks. For example, some file systems can only be read by the operating system, while others can be read and written by the user. File systems that can be read and written to by the user are called read/write file systems. Mounting a file system allows the user to access the files and folders stored on that file system. In order to mount a file system, the user must have root privileges. Once a file system is mounted, it can be unmounted by the user with root privileges. We may have access to such file systems and may find sensitive information, documentation, or applications there.
 ### Mounted File Systems
 ```
-Leonardodk@htb[/htb]$ df -h
+victim@htb[/htb]$ df -h
 
 Filesystem      Size  Used Avail Use% Mounted on
 udev            1,9G     0  1,9G   0% /dev
@@ -357,7 +357,7 @@ tmpfs           389M   24K  389M   1% /run/user/1000
 **When a file system is unmounted, it is no longer accessible by the system. This can be done for various reasons, such as when a disk is removed, or a file system is no longer needed. Another reason may be that files, scripts, documents, and other important information must not be mounted and viewed by a standard user. Therefore, if we can extend our privileges to the `root` user, we could mount and read these file systems ourselves. Unmounted file systems can be viewed as follows:**
 ### Unmounted File Systems
 ```
-Leonardodk@htb[/htb]$ cat /etc/fstab | grep -v "#" | column -t
+victim@htb[/htb]$ cat /etc/fstab | grep -v "#" | column -t
 
 UUID=5bf16727-fcdf-4205-906c-0620aa4a058f  /          ext4  errors=remount-ro  0  1
 UUID=BE56-AAE0                             /boot/efi  vfat  umask=0077         0  1
@@ -367,7 +367,7 @@ UUID=BE56-AAE0                             /boot/efi  vfat  umask=0077         0
 **Many folders and files are kept hidden on a Linux system so they are not obvious, and accidental editing is prevented. Why such files and folders are kept hidden, there are many more reasons than those mentioned so far. Nevertheless, we need to be able to locate all hidden files and folders because they can often contain sensitive information, even if we have read-only permissions.**
 ### All Hidden Files
 ```
-Leonardodk@htb[/htb]$ find / -type f -name ".*" -exec ls -l {} \; 2>/dev/null | grep htb-student
+victim@htb[/htb]$ find / -type f -name ".*" -exec ls -l {} \; 2>/dev/null | grep htb-student
 
 -rw-r--r-- 1 htb-student htb-student 3771 Nov 27 11:16 /home/htb-student/.bashrc
 -rw-rw-r-- 1 htb-student htb-student 180 Nov 27 11:36 /home/htb-student/.wget-hsts
@@ -380,7 +380,7 @@ Leonardodk@htb[/htb]$ find / -type f -name ".*" -exec ls -l {} \; 2>/dev/null | 
 
 ### All Hidden Directories
 ```
-Leonardodk@htb[/htb]$ find / -type d -name ".*" -ls 2>/dev/null
+victim@htb[/htb]$ find / -type d -name ".*" -ls 2>/dev/null
 
    684822      4 drwx------   3 htb-student htb-student     4096 Nov 28 12:32 /home/htb-student/.gnupg
    790793      4 drwx------   2 htb-student htb-student     4096 Okt 27 11:31 /home/htb-student/.ssh
@@ -408,7 +408,7 @@ Leonardodk@htb[/htb]$ find / -type d -name ".*" -ls 2>/dev/null
 **In addition, all temporary files stored in the `/tmp` directory are deleted immediately when the system is restarted. Therefore, the `/var/tmp` directory is used by programs to store data that must be kept between reboots temporarily.**
 ### Temporary Files
 ```
-Leonardodk@htb[/htb]$ ls -l /tmp /var/tmp /dev/shm
+victim@htb[/htb]$ ls -l /tmp /var/tmp /dev/shm
 
 /dev/shm:
 total 0
