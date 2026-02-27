@@ -263,7 +263,7 @@ Check GTFO for: diff
 We can use the diagnostic tool `strace` on Linux-based operating systems to track and analyze system calls and signal processing. It allows us to follow the flow of a program and understand how it accesses system resources, processes signals, and receives and sends data from the operating system. In addition, we can also use the tool to monitor security-related activities and identify potential attack vectors, such as specific requests to remote hosts using passwords or tokens.
 
 The output of `strace` can be written to a file for later analysis, and it provides a wealth of options that allow detailed monitoring of the program's behavior.
-# Trace System Calls
+### Trace System Calls
 ```
 victim@htb[/htb]$ strace ping -c1 10.129.112.20
 
