@@ -90,7 +90,7 @@ alternatives  apport  apt  bootlog  btmp  dpkg  mon  rsyslog  ubuntu-advantage-t
 ```
 
 **To `exploit` logrotate, we need some requirements that we have to fulfill.**
-1. we need `writ`e permissions on the log files
+1. we need `write` permissions on the log files
 2. logrotate must run as a privileged user or `root`
 3. vulnerable versions:
 - 3.8.6
