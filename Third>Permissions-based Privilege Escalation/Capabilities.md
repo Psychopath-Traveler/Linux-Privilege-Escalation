@@ -96,3 +96,6 @@ victim@htb[/htb]$ cat /etc/passwd | head -n1
 root::0:0:root:/root:/bin/bash
 ```
 Now, we can see that the `x` in that line is gone, which means that we can use the command `su` to log in as root without being asked for the password.
+
+# PoC
+![Proof of Concept](PoC-Capabilities.png)
