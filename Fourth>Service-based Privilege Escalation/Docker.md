@@ -80,7 +80,7 @@ root@container:/hostsystem/home/cry0l1t3$ cat .ssh/id_rsa
 
 **From here on, we could copy the contents of the private SSH key to cry0l1t3.priv file and use it to log in as the user cry0l1t3 on the host system.**
 ```
-Leonardodk@htb[/htb]$ ssh cry0l1t3@<host IP> -i cry0l1t3.priv
+victim@htb[/htb]$ ssh cry0l1t3@<host IP> -i cry0l1t3.priv
 ```
 
 ### Docker Sockets
