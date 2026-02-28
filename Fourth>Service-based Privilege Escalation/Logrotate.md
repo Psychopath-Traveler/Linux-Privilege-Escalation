@@ -135,3 +135,9 @@ Connection received on 10.129.24.11 49818
 uid=0(root) gid=0(root) groups=0(root)
 ```
 
+# PoC
+**While we enumerating for `logrotate` exploit we noticed that there's log files on `/home/htb-student/backups` folder, when we `ehco` something into it it will create other `access.log` files in the same folder.**
+![Proof of Concept](Images/PoC-of-Logrotate-Enumeration.png)
+
+**When we exploit this vulnerability just like dealing with `Cron Job Abuse` we need to wait and repeat the process until it works.**
+![Proof of Concept](Images/PoC-Logrotate-Exploit.png)
