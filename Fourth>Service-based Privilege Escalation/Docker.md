@@ -196,7 +196,7 @@ drwxr-xr-x  13 root root  4096 Apr 23  2020 var
 
 ![Proof of Concept](Images/PoC-Container-Docker-Sockets.png)
 
-**Remove Created docker images**
+**Remove Created docker images.**
 ```
 htb-student@ubuntu:/tmp$ /tmp/docker -H unix:///run/docker.sock ps
 CONTAINER ID   IMAGE     COMMAND            CREATED          STATUS          PORTS     NAMES
