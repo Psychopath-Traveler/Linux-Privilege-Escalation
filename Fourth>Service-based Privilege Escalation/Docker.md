@@ -191,7 +191,20 @@ drwxr-xr-x  14 root root  4096 Sep 22 11:11 usr
 drwxr-xr-x  13 root root  4096 Apr 23  2020 var
 ```
 
-# PoC of Docker Socket
+# PoC of Creating a new docker
 **If there's no `docker` running on the machine but there does have a docker image just simple create the new docker will stop immediately, what we need to just while creating the new docker add a command for it.**
+
 ![Proof of Concept](PoC-Container-Docker-Sockets.png)
 
+**Remove Created docker images**
+```
+htb-student@ubuntu:/tmp$ /tmp/docker -H unix:///run/docker.sock ps
+CONTAINER ID   IMAGE     COMMAND            CREATED          STATUS          PORTS     NAMES
+d16fb16f06e2   ubuntu    "sleep infinity"   14 seconds ago   Up 13 seconds             frosty_fermi
+
+htb-student@ubuntu:/tmp$ /tmp/docker -H unix:///run/docker.sock rm -f frosty_fermi
+frosty_fermi
+htb-student@ubuntu:/tmp$ 
+```
+
+# PoC of Interact with exists docker images
