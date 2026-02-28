@@ -75,4 +75,4 @@ screen -ls # screen itself is setuid, so...
 ```
 
 # PoC
-![Proof of Concept](PoC-Vulnerable-Services.png)
+![Proof of Concept](Images/PoC-Vulnerable-Services.png)
