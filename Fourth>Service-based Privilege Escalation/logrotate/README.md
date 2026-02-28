@@ -3,7 +3,7 @@
 
 # Winning a race condition in logrotate to elevate privileges
 
-![Logrotten Logo](/logrotten.png)
+![Logrotten Logo](logrotten.png)
 
 ## Brief description
   - logrotate is prone to a race condition after renaming the logfile.
