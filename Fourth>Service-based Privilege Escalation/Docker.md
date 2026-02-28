@@ -193,6 +193,5 @@ drwxr-xr-x  13 root root  4096 Apr 23  2020 var
 
 # PoC of Docker Socket
 **If there's no `docker` running on the machine but there does have a docker image just simple create the new docker will stop immediately, what we need to just while creating the new docker add a command for it.**
-
-![Proof of Concept](PoC-Container-Docker Sockets.png)
+![Proof of Concept](PoC-Container-Docker-Sockets.png)
 
